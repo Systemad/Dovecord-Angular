@@ -1,5 +1,6 @@
 using Dovecord.Databases;
 using Dovecord.Exceptions;
+using Dovecord.Extensions.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,9 +13,11 @@ public static class DeleteMessage
     public class Handler : IRequestHandler<DeleteMessageCommand, bool>
     {
         private readonly DoveDbContext _context;
-        public Handler(DoveDbContext context)
+        private readonly ICurrentUserService _currentUserService;
+        public Handler(DoveDbContext context, ICurrentUserService currentUserService)
         {
             _context = context;
+            _currentUserService = currentUserService;
         }
 
         public async Task<bool> Handle(DeleteMessageCommand request, CancellationToken cancellationToken)
@@ -24,6 +27,9 @@ public static class DeleteMessage
 
             if (message is null)
                 throw new NotFoundException("Message", request.Id);
+            
+            if (Guid.Parse(_currentUserService.UserId) != message.UserId)
+                return false;
             
             _context.ChannelMessages.Remove(message);
             await _context.SaveChangesAsync(cancellationToken);

@@ -12,7 +12,7 @@ public interface IChatClient
 
     Task MessageReceived(ChannelMessageDto message);
 
-    Task DeleteMessageReceived(string id);
+    Task DeleteMessageReceived(string channelId, string messageId);
 
     Task AddToChannel(Guid channelId, Guid userId);
 }

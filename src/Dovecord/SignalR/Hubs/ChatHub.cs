@@ -46,10 +46,12 @@ public class ChatHub : Hub<IChatClient>
         await Clients.All.UpdateData();
     }
 
+    /*
     public async Task DeleteMessageById(string messageId)
     {
         await Clients.All.DeleteMessageReceived(messageId);
     }
+    */
     public async Task UserTyping(bool isTyping)
         => await Clients.Others.UserTyping(new ActorAction(Username, isTyping));
         
