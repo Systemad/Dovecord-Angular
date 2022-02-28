@@ -25,6 +25,8 @@ public class ChatHub : Hub<IChatClient>
     
     public override async Task OnConnectedAsync()
     {
+        Console.WriteLine("UserId: " + UserId);
+        Console.WriteLine("Connection Id: " + Context.ConnectionId);
         var updateUser = new UpdateUser.UpdateUserCommand(UserId, new UserManipulationDto { IsOnline = true });
         var userExist = await _mediator.Send(updateUser);
         if (!userExist)
@@ -41,6 +43,7 @@ public class ChatHub : Hub<IChatClient>
 
     public override async Task OnDisconnectedAsync(Exception? ex)
     {
+        //Context.GetHttpContext().Session.LoadAsync()
         var updateUser = new UpdateUser.UpdateUserCommand(UserId, new UserManipulationDto { IsOnline = false });
         await _mediator.Send(updateUser);
         await Clients.All.UpdateData();
